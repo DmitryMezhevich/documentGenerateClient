@@ -8,6 +8,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [fileInputDisabled, setFileInputDisabled] = useState(false);
   const fileInputRef = useRef(null);
+  const [error, setError] = useState(null);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -30,7 +31,7 @@ const App = () => {
     formData.append('table', file); // изменение имени ключа для файла
 
     try {
-      const response = await axios.post('http://127.0.0.1:3010/api-postDocument/createShipment', formData, {
+      const response = await axios.post('https://planetshop.by/api-postDocument/createShipment', formData, {
         responseType: 'blob',
       });
 
@@ -43,7 +44,7 @@ const App = () => {
       link.remove();
     } catch (error) {
       console.error('Error:', error);
-      // Handle error scenario
+      setError(error.message);
     } finally {
       setLoading(false);
       setFileInputDisabled(false);
@@ -68,6 +69,7 @@ const App = () => {
       <button className="button" onClick={handleSubmit} disabled={loading || !file}>
         {loading ? 'Ожидание...' : 'Создать документы'}
       </button>
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 };
